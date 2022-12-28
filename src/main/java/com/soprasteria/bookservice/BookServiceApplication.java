@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,14 @@ public class BookServiceApplication {
 	
 	@Autowired
 	private EurekaClient discoveryClient;
+	
+	@Autowired
+	private DiscoveryClient consumerClient;
+	
+	@GetMapping("/rating_service_instances")
+	public List<ServiceInstance> getRatingServiceInstances() {
+		return consumerClient.getInstances("rating-service");
+	}
 	
 	public String serviceUrl() {
 	    InstanceInfo instance = discoveryClient.getNextServerFromEureka("rating-service", false);
